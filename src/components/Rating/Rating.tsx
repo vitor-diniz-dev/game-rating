@@ -1,18 +1,18 @@
 import { styled } from "@mui/material/styles";
-import MuiRating from "@mui/material/Rating";
+import MuiRating, { RatingProps } from "@mui/material/Rating";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 const StyledRating = styled(MuiRating)({
   "& .MuiRating-iconFilled": {
-    color: "#ff6d75",
+    color: "#ff4953",
   },
   "& .MuiRating-iconHover": {
     color: "#ff3d47",
   },
 });
 
-export const Rating = () => {
+export const Rating = ({ ...props }: RatingProps) => {
   return (
     <StyledRating
       name="customized-color"
@@ -23,7 +23,7 @@ export const Rating = () => {
       precision={0.5}
       icon={<FavoriteIcon fontSize="inherit" />}
       emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-      size="large"
+      {...props}
     />
   );
 };
