@@ -1,32 +1,18 @@
-import { styled } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { useState } from "react";
-import Rating from "@mui/material/Rating";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+// import Rating from "@mui/material/Rating";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
-const StyledRating = styled(Rating)({
-  "& .MuiRating-iconFilled": {
-    color: "#ff6d75",
-  },
-  "& .MuiRating-iconHover": {
-    color: "#ff3d47",
-  },
-});
+import { useNavigate } from "react-router-dom";
+import { Rating } from "../Rating/Rating";
 
 const HoverDetails = () => {
   return (
     <div className="flex items-end absolute top-0 h-full w-full bg-gradient-to-t from-gray-800 text-white">
       <div className="w-full text-left py-2 px-3">
-        <h1 className="text-lg">Marvel Rivals</h1>
+        <h1 className="text-xl">Marvel Rivals</h1>
         <div>
-          <StyledRating
-            name="customized-color"
-            defaultValue={4}
-            getLabelText={(value: number) =>
-              `${value} Heart${value !== 1 ? "s" : ""}`
-            }
-            precision={0.5}
-            icon={<FavoriteIcon fontSize="inherit" />}
+          <h2 className="block text-sm">Your rating</h2>
+          <Rating
             emptyIcon={
               <FavoriteBorderIcon fontSize="inherit" className="text-white" />
             }
@@ -37,19 +23,31 @@ const HoverDetails = () => {
   );
 };
 
-export const GameCard = () => {
+export const GameCard = ({ isLoading = false }) => {
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
-  return (
+  return isLoading ? (
+    <Skeleton
+      variant="rectangular"
+      width={265}
+      height={350}
+      className="cursor-progress"
+    />
+  ) : (
     <div>
       <button
         className="relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => navigate("game/1")}
       >
         <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co94j3.jpg" />
         {isHovered && <HoverDetails />}
       </button>
+      <div>
+        <Rating readOnly />
+      </div>
     </div>
   );
 };
