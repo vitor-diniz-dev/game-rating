@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { GameCard } from "../components/GameCard/GameCard";
+import "../index.css";
 
 const meta: Meta<typeof GameCard> = {
   component: GameCard,
@@ -10,7 +11,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    primary: true,
-    label: "Button",
+    isLoading: false,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    isLoading: true,
   },
 };
