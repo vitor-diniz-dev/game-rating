@@ -37,7 +37,7 @@ export const GameCard = ({ isLoading = false }) => {
   ) : (
     <div>
       <button
-        className="relative"
+        className="relative shadow-xl"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => navigate("game/1")}
