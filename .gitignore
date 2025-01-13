@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Variáveis de ambiente
+configs
 dist
 dist-ssr
 *.local
