@@ -1,52 +1,42 @@
-import { Skeleton } from "@mui/material";
 import { useState } from "react";
-// import Rating from "@mui/material/Rating";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useNavigate } from "react-router-dom";
 import { Rating } from "../Rating/Rating";
+import { GameCover } from "../Cover/Cover";
+import StarIcon from "@mui/icons-material/Star";
+import { Game } from "../../services/gameService";
+import { normalizeRating } from "../../utils/rating";
 
-const HoverDetails = () => {
+const hoverDetails = (name: string) => {
   return (
     <div className="flex items-end absolute top-0 h-full w-full bg-gradient-to-t from-gray-800 text-white">
       <div className="w-full text-left py-2 px-3">
-        <h1 className="text-xl">Marvel Rivals</h1>
+        <h1 className="text-xl">{name}</h1>
         <div>
           <h2 className="block text-sm">Your rating</h2>
-          <Rating
-            emptyIcon={
-              <FavoriteBorderIcon fontSize="inherit" className="text-white" />
-            }
-          />
+          <Rating emptyIcon={<StarIcon className="text-white" />} />
         </div>
       </div>
     </div>
   );
 };
 
-export const GameCard = ({ isLoading = false }) => {
+export const GameCard = ({ name, rating, cover, id }: Game) => {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
-  return isLoading ? (
-    <Skeleton
-      variant="rectangular"
-      width={265}
-      height={350}
-      className="cursor-progress"
-    />
-  ) : (
+  return (
     <div>
       <button
         className="relative shadow-xl"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => navigate("game/1")}
+        onClick={() => navigate(`game/${id}`)}
       >
-        <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co94j3.jpg" />
-        {isHovered && <HoverDetails />}
+        <GameCover coverId={cover} />
+        {isHovered && hoverDetails(name)}
       </button>
       <div>
-        <Rating readOnly />
+        <Rating readOnly value={normalizeRating(rating)} />
       </div>
     </div>
   );
