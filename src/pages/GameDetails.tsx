@@ -1,52 +1,94 @@
+import { useParams } from "react-router-dom";
 import { Chip } from "../components/Chip/Chip";
 import { Rating } from "../components/Rating/Rating";
+import { useEffect, useState } from "react";
+import { Game, getGameDetails } from "../services/gameService";
+import { Skeleton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { GameCover } from "../components/Cover/Cover";
+import { normalizeRating } from "../utils/rating";
+
+const timestampToDate = (timestamp?: number) => {
+  if (!timestamp) return "Data não definida";
+  return new Date(timestamp * 1000).toLocaleDateString("pt-BR", {
+    year: "numeric", // Ano com 4 dígitos
+    month: "short", // Nome completo do mês
+    day: "numeric", // Dia do mês
+  });
+};
 
 export const GameDetails = () => {
+  const { id } = useParams();
+  const [game, setGame] = useState<Game | null>();
+
+  const loadGameDetails = () => {
+    getGameDetails(Number(id)).then((game) => {
+      console.log("Game", game);
+      setGame(game);
+    });
+  };
+
+  useEffect(() => {
+    loadGameDetails();
+  }, []);
+
   return (
-    <div className="flex gap-16">
-      <div className="w-1/4">
-        <div>
-          <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/co94j3.jpg" />
-          <Rating className="mt-1" readOnly />
-        </div>
-      </div>
-      <div>
-        <h2 className="text-4xl">Marvel Rivals</h2>
-        <p className="italic">released on Sep 15, 2015 by Marvel</p>
-        <p className="mt-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci
-          metus, vestibulum quis sapien nec, facilisis eleifend nisi. Fusce
-          sagittis vulputate turpis, in elementum neque mollis ut. Pellentesque
-          eget risus ac mi ultricies tincidunt. Curabitur mattis sem sed ligula
-          semper, in suscipit nibh suscipit. Mauris egestas ac metus non
-          commodo. Curabitur consequat felis id laoreet porttitor. Suspendisse
-          blandit fringilla justo sed varius. Curabitur blandit lorem id turpis
-          sodales, egestas euismod magna tempor. Vivamus velit neque, accumsan
-          eget nibh eget, placerat venenatis urna. Pellentesque vel tortor
-          tellus. Vestibulum faucibus ipsum non sagittis sollicitudin.
-        </p>
-      </div>
-      <div>
-        <div className="border rounded-md px-7 py-5 text-center mb-4">
-          <h3>Your Rating</h3>
-          <Rating size="large" />
-        </div>
-        <div className="mb-2">
-          <h3>Platforms</h3>
-          <div>
-            <Chip label="Playstation" />
-            <Chip label="Windows" />
-            <Chip label="Xbox" />
-          </div>
-        </div>
-        <div>
-          <h3>Genres</h3>
-          <div>
-            <Chip label="Aventura" />
-            <Chip label="Ação" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <Grid container columnSpacing={5} columns={14}>
+      <Grid size="auto">
+        {game ? (
+          <>
+            <GameCover coverId={game.cover} />
+            <Rating value={normalizeRating(game.rating)} />
+          </>
+        ) : (
+          <Skeleton variant="rectangular" width={228} height={337} />
+        )}
+      </Grid>
+      <Grid size="grow">
+        {game ? (
+          <>
+            <h2 className="text-4xl">{game.name}</h2>
+            <p className="italic">
+              Released on: {timestampToDate(game.first_release_date)}
+            </p>
+            <p className="mt-4">{game.storyline}</p>
+          </>
+        ) : (
+          <Skeleton variant="rectangular" width="100%" height={400} />
+        )}
+      </Grid>
+      <Grid size={2}>
+        {game ? (
+          <>
+            <div className="border rounded-md px-7 py-5 text-center mb-4">
+              <h3>Your Rating</h3>
+              <Rating size="large" />
+            </div>
+            <div className="mb-2">
+              <h3>Platforms</h3>
+              <Grid container spacing={0.5}>
+                {game.platforms?.map(({ id, name }) => (
+                  <Grid>
+                    <Chip key={id} label={name} />
+                  </Grid>
+                ))}
+              </Grid>
+            </div>
+            <div>
+              <h3>Genres</h3>
+              <Grid container spacing={0.5}>
+                {game.genres?.map(({ id, name }) => (
+                  <Grid>
+                    <Chip key={id} label={name} />
+                  </Grid>
+                ))}
+              </Grid>
+            </div>
+          </>
+        ) : (
+          <Skeleton variant="rectangular" width={270} height={400} />
+        )}
+      </Grid>
+    </Grid>
   );
 };
